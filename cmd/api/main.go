@@ -1,8 +1,12 @@
 package main
 
 import (
+	"encoding/json"
 	"flag"
 	"fmt"
+	"log"
+	"os"
+	"strconv"
 	"time"
 )
 
@@ -13,7 +17,43 @@ type DFSNode struct {
 	depth int
 }
 
-func loadBoard(bs int) Board {
+func loadBoard(input string) (Board, int) {
+	pwd, err := os.Getwd()
+	if err != nil {
+		log.Println(err)
+	}
+	fpath := fmt.Sprintf("%s/%s", pwd, input)
+	file, err := os.Open(fpath)
+	if err != nil {
+		panic(err)
+	}
+	defer file.Close()
+
+	var data struct {
+		TableSize    string  `json:"tableSize"`
+		InitialBoard [][]int `json:"initialBoard"`
+	}
+
+	decoder := json.NewDecoder(file)
+	if err := decoder.Decode(&data); err != nil {
+		panic(err)
+	}
+
+	bs, err := strconv.Atoi(data.TableSize)
+	if err != nil {
+		panic(fmt.Sprintf("Invalid tableSize: %v", err))
+	}
+
+	board := make(Board, bs*bs)
+	for r := 0; r < bs; r++ {
+		for c := 0; c < bs; c++ {
+			board[r*bs+c] = uint8(data.InitialBoard[r][c])
+		}
+	}
+	return board, bs
+}
+
+func loadSampleBoard(bs int) Board {
 	switch bs {
 	case 5:
 		return Board{
@@ -190,10 +230,19 @@ func main() {
 	boardSize := flag.Int("s", 3, "Size of the board")
 	searchMethod := flag.String("m", "bfs", "Search method: bfs")
 	dfsDepth := flag.Int("d", 30, "Max depth for DFS")
-
+	uboard := flag.String("i", "", "Path to input board file (JSON)")
+	var board Board
 	flag.Parse()
 	startTime := time.Now()
-	board := loadBoard(*boardSize)
+	if *uboard != "" {
+		var bs int
+		board, bs = loadBoard(*uboard)
+		boardSize = &bs
+		println("Using user-provided board from", *uboard)
+	} else {
+		fmt.Printf("Using sample %d x %d board.\n", *boardSize, *boardSize)
+		board = loadSampleBoard(*boardSize)
+	}
 	goal := goalBoard(*boardSize)
 	switch *searchMethod {
 	case "bfs":
