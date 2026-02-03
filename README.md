@@ -110,7 +110,7 @@ Build the application for Mac OSX ARM64 (M series processors)
 make build_mac_ARM64
 ```
 
-Build the application for Mac OSX AND64 (Intel processors)
+Build the application for Mac OSX AMD64 (Intel processors)
 ```bash
 make build_mac_AMD64
 ```
@@ -120,12 +120,12 @@ Build the application for linux AMD64
 make build_linux_AMD64
 ```
 
-Build the application for linux ARD64 
+Build the application for linux ARM64 
 ```bash
 make build_linux_ARM64
 ```
 
-Clean up binary from the last build:
+Clean up binary from the last builds:
 ```bash
 make clean
 ```
