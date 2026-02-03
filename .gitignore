@@ -32,3 +32,10 @@ main
 # OS X generated file
 .DS_Store
 
+# Build artifacts
+us-solver_windows_amd64.exe
+us-solver_windows_arm64.exe
+us-solver_linux_amd64
+us-solver_linux_arm64
+us-solver_mac_amd64
+us-solver_mac_silicon

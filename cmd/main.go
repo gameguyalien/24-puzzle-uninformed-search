@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"flag"
 	"fmt"
-	"log"
 	"os"
 	"strconv"
 	"time"
@@ -18,12 +17,7 @@ type DFSNode struct {
 }
 
 func loadBoard(input string) (Board, int) {
-	pwd, err := os.Getwd()
-	if err != nil {
-		log.Println(err)
-	}
-	fpath := fmt.Sprintf("%s/%s", pwd, input)
-	file, err := os.Open(fpath)
+	file, err := os.Open(input)
 	if err != nil {
 		panic(err)
 	}
@@ -227,8 +221,8 @@ func dfs(start Board, goal Board, bs int, maxDepth int) ([]Board, bool) {
 }
 
 func main() {
-	boardSize := flag.Int("s", 3, "Size of the board")
-	searchMethod := flag.String("m", "bfs", "Search method: bfs")
+	boardSize := flag.Int("s", 3, "Size of the board: valid options are 3, 4, or 5")
+	searchMethod := flag.String("m", "bfs", "Search method: vaild options are 'bfs' or 'dfs'")
 	dfsDepth := flag.Int("d", 30, "Max depth for DFS")
 	uboard := flag.String("i", "", "Path to input board file (JSON)")
 	var board Board
